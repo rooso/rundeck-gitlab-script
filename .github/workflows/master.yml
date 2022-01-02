@@ -1,14 +1,18 @@
-name: MasterDeployCI
+name: Publish Release
+
 on:
   push:
-    branches:
-      - main
+    tags:
+      - 'v*'
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v1
-    - name: Zip Folder
-      run: zip -r plugin-release.zip . -x ".git/*" ".github/*" "releases/*" "README.md"
-    - name: Release to Github
-      run: echo "Release"
+    - uses: actions/checkout@master
+    - name: Create a Release
+      uses: elgohr/Github-Release-Action@master
+      env:
+        GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+      with:
+        args: MyReleaseMessage
