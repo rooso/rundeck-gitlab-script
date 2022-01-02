@@ -1,0 +1,75 @@
+name: Gitlab Scripts
+version: 1.0.0
+rundeckPluginVersion: 2.0
+author: Oliver Roos
+date: "2021-11-30"
+url: https://twitter.com/roos_oliver
+description: "Run Scripts directly from Gitlab"
+rundeckCompatibilityVersion: "3.x"
+targetHostCompatibility: "all"
+providers:
+  - name: provider
+    title: Script file from Gitlab
+    service: RemoteScriptNodeStep
+    description: "Run Scripts directly from Gitlab"
+    plugin-type: script
+    script-interpreter: ${config.interpreter}
+    script-file: run-git-script.py
+    script-args: --token ${config.gitlab_accesstoken} --projectid ${config.gitlab_project_id} --filepath ${config.gitlab_filepath} --arguments ${config.script_arguments} --baseuri ${config.gitlab_baseuri} --branch ${config.gitlab_branch}
+    config:
+      - name: interpreter
+        title: Python Interpreter
+        description: "Python Interpreter (Default: 'python -u' for linux and 'C:\\windows\\py.exe -3.8' for windows )"
+        type: String
+        default: "python -u"
+        required: true
+        scope: Instance
+        renderingOptions:
+          groupName: Script
+      - name: script_arguments
+        title: Script Arguments
+        description: "Arguments to pass to script, spaces must be surrounded by apostrophes"
+        type: String
+        required: false
+        renderingOptions:
+          groupName: Script
+      - name: gitlab_baseuri
+        title: Gitlab Base URI
+        description: "Url of Gitlab Instance (as example: https://git.contoso.com)"
+        type: String
+        required: true
+        renderingOptions:
+          groupName: Gitlab
+      - name: gitlab_accesstoken
+        title: Gitlab Accesstoken Key Storage Path
+        type: String
+        required: false
+        description: ""
+        renderingOptions:
+          groupName: Gitlab
+          selectionAccessor: "STORAGE_PATH"
+          valueConversion: "STORAGE_PATH_AUTOMATIC_READ"
+          storage-path-root: "keys"
+          instance-scope-node-attribute: "gitlab-access-token-path"
+      - name: gitlab_project_id
+        title: Gitlab Project ID
+        description: "ID of Gitlab project that hosts the script"
+        type: String
+        required: true
+        renderingOptions:
+          groupName: Gitlab
+      - name: gitlab_branch
+        title: Gitlab Branch
+        description: "Branch for Gitlab project"
+        type: String
+        required: true
+        default: "master"
+        renderingOptions:
+          groupName: Gitlab
+      - name: gitlab_filepath
+        title: Gitlab Filepath to Script
+        description: "Path to script for project root directory"
+        type: String
+        required: true
+        renderingOptions:
+          groupName: Gitlab
